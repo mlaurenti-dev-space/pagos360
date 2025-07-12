@@ -2,7 +2,7 @@ package com.devspace.pagos360.paymentrequests.application
 
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
-import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayPaymentProviderClient
+import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayPaymentRequestProviderClient
 import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayRequestRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 @Service
 class PayRequestService(
     private val payRequestRepository: PayRequestRepository,
-    private val payPaymentProviderClient: PayPaymentProviderClient
+    private val payPaymentRequestProviderClient: PayPaymentRequestProviderClient
 ) : PayRequestUseCases {
 
     override fun listAll(
@@ -31,7 +31,7 @@ class PayRequestService(
                 payRequestRepository.save(pr)
                     // 2. crear cargo en provider y obtener URL
                     .flatMap { saved ->
-                        payPaymentProviderClient.createCharge(saved)
+                        payPaymentRequestProviderClient.createPaymentRequest(saved)
                             .map { resp ->
                                 // 3. actualizar con checkoutUrl, si quieres guardar el campo
                                 saved.copy(updatedAt = LocalDateTime.now())
