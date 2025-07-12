@@ -16,6 +16,9 @@ spring:
           # Aunque no usamos jwk-set-uri, vamos a inyectar nuestro decoder manualmente
           # El 'secret' lo cargará nuestro bean de configuración.
           secret: ${SECRET_KEY:}
+  doc:
+    swagger-ui:
+      path: /swagger-ui.html
 pagos360:
   api:
     base-url: ${PAGOS360_BASE_URL}
