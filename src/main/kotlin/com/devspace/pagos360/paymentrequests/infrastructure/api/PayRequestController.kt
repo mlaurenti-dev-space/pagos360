@@ -1,0 +1,59 @@
+package com.devspace.pagos360.paymentrequests.infrastructure.api
+
+import com.devspace.pagos360.paymentrequests.application.dto.PayCreateRequestCmd
+import com.devspace.pagos360.paymentrequests.application.dto.PayResponseDto
+import com.devspace.pagos360.paymentrequests.domain.PayDueDate
+import com.devspace.pagos360.paymentrequests.domain.PayMoney
+import com.devspace.pagos360.paymentrequests.domain.PayRequest
+import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
+import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+import java.util.*
+
+/**
+ * Controller for managing payment requests.
+ * Provides endpoints to create, list, and retrieve payment requests.
+ *
+ * @property payRequestUseCases Use cases for handling payment requests.
+ */
+@RestController
+@RequestMapping("/api/payment-requests")
+@Validated
+class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
+
+    @GetMapping
+    fun list(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): Flux<PayResponseDto> =
+        payRequestUseCases.listAll(page, size).map { it.toDto() }
+
+    @GetMapping("/{id}")
+    fun getOne(@PathVariable id: String): Mono<PayResponseDto> =
+        payRequestUseCases.findById(UUID.fromString(id)).map { it.toDto() }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    fun create(
+        @RequestBody cmds: List<@Valid PayCreateRequestCmd>
+    ): Flux<PayResponseDto> =
+        payRequestUseCases.create(cmds.map { cmd ->
+            PayRequest(
+                description = cmd.description,
+                firstDueDate = PayDueDate(cmd.firstDueDate),
+                firstTotal = PayMoney(cmd.firstTotal, "ARS"),
+                payerName = cmd.payerName
+            )
+        })
+            .map { it.toDto() }
+
+    @PostMapping("/{id}/pay")
+    fun pay(@PathVariable id: String): Flux<PayResponseDto> =
+        payRequestUseCases.markPaid(UUID.fromString(id))
+            .map { it.toDto() }
+            .flux()
+}
