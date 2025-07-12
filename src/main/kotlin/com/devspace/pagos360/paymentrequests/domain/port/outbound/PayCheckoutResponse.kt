@@ -1,4 +1,4 @@
-package com.devspace.pagos360.paymentrequests.port.outbound
+package com.devspace.pagos360.paymentrequests.domain.port.outbound
 
 /**
  * Represents the response from the payment provider after initiating a checkout.

@@ -1,4 +1,4 @@
-package com.devspace.pagos360.paymentrequests.port.inbound
+package com.devspace.pagos360.paymentrequests.domain.port.inbound
 
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
 import reactor.core.publisher.Flux
