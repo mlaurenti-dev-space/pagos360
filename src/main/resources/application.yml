@@ -9,6 +9,13 @@ spring:
       max-size: 20  # Maximum number of connections in the pool
       initial-size: 5 # Initial number of connections in the pool
       validation-query: SELECT 1  -- Validates connections before use
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Aunque no usamos jwk-set-uri, vamos a inyectar nuestro decoder manualmente
+          # El 'secret' lo cargará nuestro bean de configuración.
+          secret: ${SECRET_KEY:}
 pagos360:
   api:
     base-url: ${PAGOS360_BASE_URL}
