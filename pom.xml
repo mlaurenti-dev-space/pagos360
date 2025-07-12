@@ -8,11 +8,11 @@
         <version>3.4.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.devspace</groupId>
-    <artifactId>pagos360</artifactId>
+    <groupId>com.devspace.pagos360</groupId>
+    <artifactId>payment-requests</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>pagos360</name>
-    <description>pagos360</description>
+    <name>Payment Requests</name>
+    <description>Solicitudes de Pagos360</description>
     <url/>
     <licenses>
         <license/>

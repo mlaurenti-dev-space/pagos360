@@ -1,6 +1,6 @@
 spring:
   application:
-    name: pagos360
+    name: Payment Requests
   r2dbc:
     url: ${R2DBC_URL}
     username: ${R2DBC_USER}

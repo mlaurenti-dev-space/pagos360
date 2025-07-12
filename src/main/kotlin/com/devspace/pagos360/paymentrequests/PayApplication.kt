@@ -1,11 +1,11 @@
-package com.devspace.pagos360
+package com.devspace.pagos360.paymentrequests
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class Pagos360Application
+class PayApplication
 
 fun main(args: Array<String>) {
-    runApplication<Pagos360Application>(*args)
+    runApplication<PayApplication>(*args)
 }
