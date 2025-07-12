@@ -2,9 +2,9 @@ spring:
   application:
     name: pagos360
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/pagos360
-    username: postgres
-    password: postgres
+    url: ${R2DBC_URL}
+    username: ${R2DBC_USER}
+    password: ${R2DBC_PASSWORD}
     pool:
         max-size: 20  # Maximum number of connections in the pool
         initial-size: 5 # Initial number of connections in the pool
