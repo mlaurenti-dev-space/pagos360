@@ -6,6 +6,8 @@ import com.devspace.pagos360.paymentrequests.domain.PayDueDate
 import com.devspace.pagos360.paymentrequests.domain.PayMoney
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
@@ -23,8 +25,10 @@ import java.util.*
 @RestController
 @RequestMapping("/api/payment-requests")
 @Validated
+@Tag(name = "Payment Requests", description = "Payment Requests")
 class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
 
+    @Operation(summary = "Get Payment Requests", description = "Get Payment Requests")
     @GetMapping
     fun list(
         @RequestParam(defaultValue = "0") page: Int,
@@ -32,10 +36,12 @@ class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
     ): Flux<PayResponseDto> =
         payRequestUseCases.listAll(page, size).map { it.toDto() }
 
+    @Operation(summary = "Get Payment Request by ID", description = "Get Payment Request by ID")
     @GetMapping("/{id}")
     fun getOne(@PathVariable id: String): Mono<PayResponseDto> =
         payRequestUseCases.findById(UUID.fromString(id)).map { it.toDto() }
 
+    @Operation(summary = "Create Payment Requests", description = "Create Payment Requests")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(
