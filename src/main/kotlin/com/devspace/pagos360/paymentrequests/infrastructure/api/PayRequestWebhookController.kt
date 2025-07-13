@@ -1,8 +1,10 @@
 package com.devspace.pagos360.paymentrequests.infrastructure.api
 
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
+import io.swagger.v3.oas.annotations.Parameter
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
@@ -19,6 +21,10 @@ class PayRequestWebhookController(
     private val useCases: PayRequestUseCases
 ) {
     @PostMapping
-    fun webhook(@RequestBody event: PayWebhookEvent): Mono<Void> =
+    fun webhook(
+        @Parameter(description = "Token for authentication", required = true)
+        @RequestHeader("Bearer") token: String,
+        @RequestBody event: PayWebhookEvent
+    ): Mono<Void> =
         useCases.markPaid(UUID.fromString(event.id)).then()
 }

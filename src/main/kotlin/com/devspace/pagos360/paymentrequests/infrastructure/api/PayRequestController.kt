@@ -28,7 +28,7 @@ import java.util.*
 @Tag(name = "Payment Requests", description = "Payment Requests")
 class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
 
-    @Operation(summary = "Get Payment Requests", description = "Get Payment Requests")
+    @Operation(summary = "List Payment Requests")
     @GetMapping
     fun list(
         @RequestParam(defaultValue = "0") page: Int,
@@ -36,12 +36,12 @@ class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
     ): Flux<PayResponseDto> =
         payRequestUseCases.listAll(page, size).map { it.toDto() }
 
-    @Operation(summary = "Get Payment Request by ID", description = "Get Payment Request by ID")
+    @Operation(summary = "Get Payment Request by ID")
     @GetMapping("/{id}")
     fun getOne(@PathVariable id: String): Mono<PayResponseDto> =
         payRequestUseCases.findById(UUID.fromString(id)).map { it.toDto() }
 
-    @Operation(summary = "Create Payment Requests", description = "Create Payment Requests")
+    @Operation(summary = "Create Payment Requests")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(
@@ -57,6 +57,7 @@ class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
         })
             .map { it.toDto() }
 
+    @Operation(summary = "Pay Payment Request by ID")
     @PostMapping("/{id}/pay")
     fun pay(@PathVariable id: String): Flux<PayResponseDto> =
         payRequestUseCases.markPaid(UUID.fromString(id))

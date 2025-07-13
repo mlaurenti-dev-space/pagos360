@@ -5,6 +5,7 @@ import com.devspace.pagos360.paymentrequests.domain.PayMoney
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
 import com.devspace.pagos360.paymentrequests.domain.PayStatus
 import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -26,11 +27,16 @@ class PayRequestEntity(
     @Id
     val id: UUID? = null,
     val description: String,
+    @Column("first_due_date")
     val firstDueDate: LocalDateTime,
+    @Column("first_total")
     val firstTotal: BigDecimal,
+    @Column("first_name")
     val payerName: String,
     val status: String,
+    @Column("created_at")
     val createdAt: LocalDateTime,
+    @Column("updated_at")
     val updatedAt: LocalDateTime
 ) {
     companion object {
