@@ -31,11 +31,11 @@ pagos360:
   api:
     base-url: ${PAGOS360_BASE_URL}
     api-key: ${PAGOS360_API_KEY}
-logging:
-  level:
-    org.springframework.r2dbc: DEBUG
-    io.r2dbc: DEBUG
-    reactor.core.publisher: DEBUG
+#logging:
+#  level:
+#    org.springframework.r2dbc: DEBUG
+#    io.r2dbc: DEBUG
+#    reactor.core.publisher: DEBUG
 
 
 

@@ -1,4 +1,4 @@
-package com.devspace.pagos360.paymentrequests.infrastructure
+package com.devspace.pagos360.paymentrequests.infrastructure.adapter.r2dbc
 
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
 import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayRequestRepository
@@ -15,7 +15,7 @@ class PayR2dbcRequestRepositoryAdapter(
 ) : PayRequestRepository {
 
     override fun save(request: PayRequest): Mono<PayRequest> =
-        delegate.save(PayRequestEntity.fromDomain(request, true)).map { it.toDomain() }
+        delegate.save(PayRequestEntity.Companion.fromDomain(request, true)).map { it.toDomain() }
 
     override fun findById(id: Any): Mono<PayRequest> = delegate.findById(id).map { it.toDomain() }
 
