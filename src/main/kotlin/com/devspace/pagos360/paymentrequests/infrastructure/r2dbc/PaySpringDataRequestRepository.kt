@@ -12,7 +12,7 @@ import reactor.core.publisher.Flux
 interface PaySpringDataRequestRepository : ReactiveCrudRepository<PayRequestEntity, Any> {
     @Query("""
     SELECT * 
-      FROM payment_requests 
+      FROM pay_payment_requests 
      ORDER BY created_at DESC 
      OFFSET :#{#pageable.offset} 
      LIMIT  :#{#pageable.pageSize}

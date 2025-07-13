@@ -18,6 +18,6 @@ class PayApiExceptionHandler {
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handleOther(ex: Exception): Mono<Map<String,String>> =
-        Mono.just(mapOf("error" to "Unexpected error"))
+        Mono.just(mapOf("error" to (ex.message ?: "An unexpected error occurred")))
 
 }

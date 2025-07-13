@@ -24,7 +24,7 @@ class PayPagos360PaymentRequestClientAdapter(private val webClient: WebClient) :
             .bodyToMono(PayPagos360ChargeResponse::class.java)
             .map { resp ->
                 PayResponse(
-                    requestId = request.id,
+                    requestId = request.id ?: throw IllegalStateException("Request ID must not be null"),
                     checkoutUrl = resp.checkoutUrl
                 )
             }

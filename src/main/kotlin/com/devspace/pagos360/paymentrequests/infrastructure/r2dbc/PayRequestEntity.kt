@@ -31,7 +31,7 @@ class PayRequestEntity(
     val firstDueDate: LocalDateTime,
     @Column("first_total")
     val firstTotal: BigDecimal,
-    @Column("first_name")
+    @Column("payer_name")
     val payerName: String,
     val status: String,
     @Column("created_at")
@@ -40,9 +40,9 @@ class PayRequestEntity(
     val updatedAt: LocalDateTime
 ) {
     companion object {
-        fun fromDomain(domain: PayRequest): PayRequestEntity =
+        fun fromDomain(domain: PayRequest, isNew: Boolean): PayRequestEntity =
             PayRequestEntity(
-                id            = domain.id,
+                id            = if (isNew) null else domain.id,
                 description   = domain.description,
                 firstDueDate  = domain.firstDueDate.date,
                 firstTotal    = domain.firstTotal.amount,

@@ -16,7 +16,7 @@ import java.util.UUID
  * @property updatedAt Timestamp when the payment request was last updated.
  */
 data class PayRequest(
-    val id: UUID = UUID.randomUUID(),
+    val id: UUID,
     val description: String,
     val firstDueDate: PayDueDate,
     val firstTotal: PayMoney,

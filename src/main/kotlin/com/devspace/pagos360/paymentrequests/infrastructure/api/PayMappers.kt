@@ -4,7 +4,7 @@ import com.devspace.pagos360.paymentrequests.application.dto.PayResponseDto
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
 
 fun PayRequest.toDto(checkoutUrl: String? = null) = PayResponseDto(
-    id            = this.id,
+    id            = this.id!!,
     description   = this.description,
     firstDueDate  = this.firstDueDate.date,
     firstTotal    = this.firstTotal.amount,
