@@ -1,6 +1,7 @@
 package com.devspace.pagos360.paymentrequests.infrastructure.api
 
 import com.devspace.pagos360.paymentrequests.domain.PayRequestNotFoundException
+import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
