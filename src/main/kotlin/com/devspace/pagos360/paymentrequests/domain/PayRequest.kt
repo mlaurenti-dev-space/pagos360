@@ -1,5 +1,6 @@
 package com.devspace.pagos360.paymentrequests.domain
 
+import org.apache.commons.lang3.StringUtils
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
@@ -23,7 +24,8 @@ data class PayRequest(
     val payerName: String,
     val status: PayStatus = PayStatus.PENDING,
     val createdAt: LocalDateTime = LocalDateTime.now(),
-    val updatedAt: LocalDateTime = LocalDateTime.now()
+    val updatedAt: LocalDateTime = LocalDateTime.now(),
+    val checkoutUrl: String = StringUtils.EMPTY
 ) {
     init {
         require(description.isNotBlank()) { "Description cannot be blank" }

@@ -42,7 +42,7 @@ class PayRequestService(
                             .map { resp ->
                                 logger.debug("Received provider response for PayRequest id={}", saved.id)
                                 // 3. actualizar con checkoutUrl, si quieres guardar el campo
-                                saved.copy(updatedAt = LocalDateTime.now())
+                                saved.copy(updatedAt = LocalDateTime.now(), checkoutUrl = resp.checkoutUrl)
                             }
                     }
                     // 4. retry en errores externos
