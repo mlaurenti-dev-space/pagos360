@@ -1,28 +1,28 @@
 package com.devspace.pagos360.paymentrequests.infrastructure.api
 
 import com.devspace.pagos360.paymentrequests.application.dto.PayCreateRequestCmd
+import com.devspace.pagos360.paymentrequests.application.dto.PayPatchRequestStatusCmd
 import com.devspace.pagos360.paymentrequests.application.dto.PayResponseDto
 import com.devspace.pagos360.paymentrequests.domain.PayDueDate
 import com.devspace.pagos360.paymentrequests.domain.PayMoney
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
+import com.devspace.pagos360.paymentrequests.domain.PayStatus
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.UUID
-import kotlin.compareTo
-import kotlin.text.compareTo
+import java.util.*
 
 fun PayRequest.toDto() = PayResponseDto(
-    id            = this.id,
-    description   = this.description,
-    firstDueDate  = this.firstDueDate.date.toString(),
-    firstTotal    = this.firstTotal.amount,
-    payerName     = this.payerName,
-    status        = this.status.name,
-    checkoutUrl   = this.checkoutUrl
+    id = this.id,
+    description = this.description,
+    firstDueDate = this.firstDueDate.date.toString(),
+    firstTotal = this.firstTotal.amount,
+    payerName = this.payerName,
+    status = this.status.name,
+    checkoutUrl = this.checkoutUrl
 )
 
-fun PayCreateRequestCmd.toDomain() : PayRequest {
+fun PayCreateRequestCmd.toDomain(): PayRequest {
     require(!description.isNullOrBlank()) { "Description must not be null or blank" }
     require(!firstDueDate.isNullOrBlank()) { "First due date must not be null or blank" }
     require(!firstTotal.isNullOrBlank()) { "First total must not be null or blank" }
@@ -52,4 +52,10 @@ fun PayCreateRequestCmd.toDomain() : PayRequest {
 }
 
 
-data class WebhookEvent(val id: String)
+fun PayPatchRequestStatusCmd.toStatus(): PayStatus {
+    return when (status.name.lowercase()) {
+        "paid" -> PayStatus.PAID
+        "reversed" -> PayStatus.REVERSED
+        else -> throw IllegalArgumentException("Invalid status: $status")
+    }
+}

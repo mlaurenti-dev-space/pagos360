@@ -3,7 +3,9 @@ package com.devspace.pagos360.paymentrequests.domain
 import org.apache.commons.lang3.StringUtils
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
+
+typealias PayTransitionLogic = (PayRequest) -> PayRequest
 
 /** * Represents a payment request in the system.
  *
@@ -37,4 +39,22 @@ data class PayRequest(
 
     fun markReversed(at: LocalDateTime = LocalDateTime.now()): PayRequest =
         copy(status = PayStatus.REVERSED, updatedAt = at)
+
+    fun transitionTo(target: PayStatus): PayRequest {
+        val logic = transitions[this.status to target]
+            ?: error("Transición inválida de ${this.status} a $target para PayRequest ${this.id}")
+        return logic(this)
+    }
+
+    companion object {
+        val transitions: Map<Pair<PayStatus, PayStatus>, PayTransitionLogic> = mapOf(
+            (PayStatus.PENDING to PayStatus.PAID) to { pr ->
+                pr.copy(status = PayStatus.PAID, updatedAt = LocalDateTime.now())
+            },
+            (PayStatus.PAID to PayStatus.REVERSED) to { pr ->
+                pr.copy(status = PayStatus.REVERSED, updatedAt = LocalDateTime.now())
+            }
+            // Puedes agregar más transiciones aquí según sea necesario
+        )
+    }
 }

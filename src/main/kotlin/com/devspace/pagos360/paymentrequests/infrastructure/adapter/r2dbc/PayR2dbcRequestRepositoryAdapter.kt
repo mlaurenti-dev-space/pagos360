@@ -17,6 +17,9 @@ class PayR2dbcRequestRepositoryAdapter(
     override fun save(request: PayRequest): Mono<PayRequest> =
         delegate.save(PayRequestEntity.Companion.fromDomain(request, true)).map { it.toDomain() }
 
+    override fun update(request: PayRequest): Mono<PayRequest> =
+        delegate.save(PayRequestEntity.Companion.fromDomain(request, false)).map { it.toDomain() }
+
     override fun findById(id: Any): Mono<PayRequest> = delegate.findById(id).map { it.toDomain() }
 
     override fun list(page: Int, size: Int): Flux<PayRequest> =

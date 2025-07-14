@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono
  */
 interface PayRequestRepository {
     fun save(request: PayRequest): Mono<PayRequest>
+    fun update(request: PayRequest): Mono<PayRequest>
     fun findById(id: Any): Mono<PayRequest>
     fun list(page: Int, size: Int): Flux<PayRequest>
 }

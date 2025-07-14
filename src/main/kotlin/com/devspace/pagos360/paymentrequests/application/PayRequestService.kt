@@ -1,6 +1,7 @@
 package com.devspace.pagos360.paymentrequests.application
 
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
+import com.devspace.pagos360.paymentrequests.domain.PayStatus
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
 import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayPaymentRequestProviderClient
 import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayRequestRepository
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Service
 class PayRequestService(
@@ -24,7 +26,7 @@ class PayRequestService(
         size: Int
     ): Flux<PayRequest> = payRequestRepository.list(page, size)
 
-    override fun findById(id: Any): Mono<PayRequest> = payRequestRepository.findById(id)
+    override fun findById(id: UUID): Mono<PayRequest> = payRequestRepository.findById(id)
 
     override fun create(requests: List<PayRequest>): Flux<PayRequest> {
         logger.info("Creating {} PayRequests", requests.size)
@@ -48,8 +50,10 @@ class PayRequestService(
             }, 5).doOnError { e -> logger.error("Error in create PayRequests", e) }   // hasta 5 concurrencias
     }
 
-    override fun markPaid(id: Any): Mono<PayRequest> =
+    override fun updateStatus(id: UUID, targetStatus: PayStatus): Mono<PayRequest> =
         payRequestRepository.findById(id)
-            .map { it.markPaid(LocalDateTime.now()) }
-            .flatMap { payRequestRepository.save(it) }
+            .map { it.transitionTo(targetStatus) }
+            .flatMap {
+                payRequestRepository.update(it)
+            }
 }

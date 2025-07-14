@@ -2,9 +2,6 @@ package com.devspace.pagos360.paymentrequests.infrastructure.api
 
 import com.devspace.pagos360.paymentrequests.application.dto.PayCreateRequestCmd
 import com.devspace.pagos360.paymentrequests.application.dto.PayResponseDto
-import com.devspace.pagos360.paymentrequests.domain.PayDueDate
-import com.devspace.pagos360.paymentrequests.domain.PayMoney
-import com.devspace.pagos360.paymentrequests.domain.PayRequest
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -51,11 +48,4 @@ class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
             cmd.toDomain()
         })
             .map { it.toDto() }
-
-    @Operation(summary = "Pay Payment Request by ID")
-    @PostMapping("/{id}/pay")
-    fun pay(@PathVariable id: String): Flux<PayResponseDto> =
-        payRequestUseCases.markPaid(UUID.fromString(id))
-            .map { it.toDto() }
-            .flux()
 }

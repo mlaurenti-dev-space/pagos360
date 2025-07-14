@@ -1,11 +1,18 @@
 package com.devspace.pagos360.paymentrequests.infrastructure.api
 
+import com.devspace.pagos360.paymentrequests.application.dto.PayPatchRequestStatusCmd
+import com.devspace.pagos360.paymentrequests.application.dto.PayResponseDto
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import org.springframework.web.bind.annotation.PostMapping
+import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 import java.util.UUID
@@ -16,15 +23,19 @@ import java.util.UUID
  * Endpoint de webhook para recibir notificaciones de pago
  */
 @RestController
-@RequestMapping("/api/payment-requests/webhook")
+@RequestMapping("/api/webhook/payment-requests")
+@Tag(name = "Payment Requests Webhook")
 class PayRequestWebhookController(
     private val useCases: PayRequestUseCases
 ) {
-    @PostMapping
+
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Receive webhook event from payment provider")
     fun webhook(
         @Parameter(description = "Token for authentication", required = true)
         @RequestHeader("Bearer") token: String,
-        @RequestBody event: PayWebhookEvent
-    ): Mono<Void> =
-        useCases.markPaid(UUID.fromString(event.id)).then()
+        @PathVariable id: UUID,
+        @RequestBody cmd: PayPatchRequestStatusCmd
+    ): Mono<PayResponseDto> =
+        useCases.updateStatus(id, cmd.toStatus()).map { it.toDto() }
 }
