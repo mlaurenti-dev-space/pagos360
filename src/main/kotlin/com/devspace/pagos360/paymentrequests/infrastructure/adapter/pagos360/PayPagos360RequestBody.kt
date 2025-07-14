@@ -1,6 +1,7 @@
 package com.devspace.pagos360.paymentrequests.infrastructure.adapter.pagos360
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -19,7 +20,7 @@ class PayPagos360RequestDetail private constructor(
 
         fun from(
             description: String,
-            firstDueDate: LocalDateTime,
+            firstDueDate: LocalDate,
             firstTotal: String,
             payerName: String
         ): PayPagos360RequestDetail {

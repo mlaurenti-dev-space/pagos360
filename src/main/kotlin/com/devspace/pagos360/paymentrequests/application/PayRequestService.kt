@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import reactor.util.retry.Retry
-import java.time.Duration
 import java.time.LocalDateTime
 
 @Service
@@ -45,8 +43,8 @@ class PayRequestService(
                                 saved.copy(updatedAt = LocalDateTime.now(), checkoutUrl = resp.checkoutUrl)
                             }
                     }
-                    // 4. retry en errores externos
-                    // .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(1)))
+                // 4. retry en errores externos
+                // .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(1)))
             }, 5).doOnError { e -> logger.error("Error in create PayRequests", e) }   // hasta 5 concurrencias
     }
 
