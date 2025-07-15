@@ -33,8 +33,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    env_file:
-      - .env.docker
     container_name: pr-app
     restart: unless-stopped
     depends_on:
@@ -53,6 +51,18 @@ services:
       SPRING_PROFILES_ACTIVE: ${PROFILE}
     ports:
       - "8080:8080"
+
+  auth-server:
+    build:
+      context: ./lib
+      dockerfile: Dockerfile.auth
+    container_name: pr-auth-server
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      SERVER_PORT: 8083  # O como lo configures
+    ports:
+      - "8083:8083"
 
 volumes:
   pgdata:
