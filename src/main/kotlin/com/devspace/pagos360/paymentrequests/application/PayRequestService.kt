@@ -21,13 +21,10 @@ import java.util.UUID
 @Service
 class PayRequestService(
     private val payRequestRepository: PayRequestRepository,
-    private val payPaymentRequestProviderClient: PayPaymentRequestProviderClient,
-    txManager: ReactiveTransactionManager
+    private val payPaymentRequestProviderClient: PayPaymentRequestProviderClient
 ) : PayRequestUseCases {
 
     private val logger: Logger = LoggerFactory.getLogger(PayRequestService::class.java)
-
-    private val transactionalOperator = TransactionalOperator.create(txManager)
 
     override fun listAll(
         page: Int,
@@ -40,16 +37,20 @@ class PayRequestService(
         logger.info("Creating {} PayRequests", requests.size)
         return Flux.fromIterable(requests)
             .flatMapSequential({ pr ->
+                logger.info("Saving PayRequest: {}", pr)
                 payRequestRepository.save(pr)
                     .flatMap { saved ->
+                        logger.info("Saved PayRequest with id: {}", saved.id)
                         payPaymentRequestProviderClient.createPaymentRequest(saved)
                             .map { resp ->
+                                logger.info("Provider response for PayRequest id {}: {}", saved.id, resp)
                                 saved.copy(
                                     updatedAt = LocalDateTime.now(),
                                     checkoutUrl = resp.checkoutUrl
                                 )
                             }
                             .onErrorResume { ex ->
+                                logger.error("Error from provider for PayRequest id {}: {}", saved.id, ex.message)
                                 payRequestRepository.update(
                                     saved.copy(
                                         updatedAt = LocalDateTime.now(),
@@ -58,7 +59,7 @@ class PayRequestService(
                                 )
                             }
                     }
-                .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(1))) // si querés retries acá, o en createPaymentRequest
+                .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(1)))
             }, 5)
     }
 
@@ -67,6 +68,7 @@ class PayRequestService(
         payRequestRepository.findById(id)
             .map { it.transitionTo(targetStatus) }
             .flatMap {
+                logger.info("Updating PayRequest id {} to status {}", id, targetStatus)
                 payRequestRepository.update(it)
             }
 }
