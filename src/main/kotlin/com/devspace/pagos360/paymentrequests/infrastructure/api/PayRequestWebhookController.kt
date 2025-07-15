@@ -26,7 +26,6 @@ class PayRequestWebhookController(
     @Operation(summary = "Receive webhook event from payment provider")
     fun webhook(
         @Parameter(description = "Token for authentication", required = true)
-        @RequestHeader("Bearer") token: String,
         @PathVariable id: UUID,
         @RequestBody cmd: PayPatchRequestStatusCmd
     ): Mono<PayResponseDto> =
