@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-pr-user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pr-pass}
-      POSTGRES_DB: ${POSTGRES_DB:-pr}
+      POSTGRES_DB:   ${POSTGRES_DB:-pr}
     ports:
       - "${PG_PORT:-5432}:5432"
     volumes:
@@ -28,31 +28,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-  payment-requests:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env.docker
-    container_name: pr-app
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      JDBC_URL: ${JDBC_URL}
-      JDBC_USER: ${JDBC_USER}
-      JDBC_PASSWORD: ${JDBC_PASSWORD}
-      R2DBC_URL: ${R2DBC_URL}
-      R2DBC_USER: ${R2DBC_USER}
-      R2DBC_PASSWORD: ${R2DBC_PASSWORD}
-      PAGOS360_BASE_URL: ${PAGOS360_BASE_URL}
-      PAGOS360_API_KEY: ${PAGOS360_API_KEY}
-      SECRET_KEY: ${SECRET_KEY}
-      SPRING_PROFILES_ACTIVE: ${PROFILE}
-    ports:
-      - "8080:8080"
 
 volumes:
   pgdata:
