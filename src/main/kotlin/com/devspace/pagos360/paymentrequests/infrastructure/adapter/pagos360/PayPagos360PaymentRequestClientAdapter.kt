@@ -14,6 +14,8 @@ class PayPagos360PaymentRequestClientAdapter(private val webClient: WebClient) :
 
     private val logger: Logger = LoggerFactory.getLogger(PayPagos360PaymentRequestClientAdapter::class.java)
 
+    var test: Boolean = true
+
     override fun createPaymentRequest(request: PayRequest): Mono<PayResponse> {
         logger.info("Creating payment request for id={}, payerName={}", request.id, request.payerName)
         val body = PayPagos360RequestBody(

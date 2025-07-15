@@ -7,4 +7,4 @@ package com.devspace.pagos360.paymentrequests.domain
  * @property PAID The payment request has been paid.
  * @property REVERSED The payment request has been reversed.
  */
-enum class PayStatus { PENDING, PAID, REVERSED }
+enum class PayStatus { PENDING, PAID, REVERSED, ERROR }
