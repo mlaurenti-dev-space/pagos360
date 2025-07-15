@@ -19,7 +19,6 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
-    contexts: ${PROFILE:default}  # Default profile if not set
   security:
     oauth2:
       resourceserver:
@@ -33,6 +32,8 @@ pagos360:
     api-key: ${PAGOS360_API_KEY}
 #logging:
 #  level:
+#    liquibase: DEBUG
+#    org.springframework.boot.autoconfigure.liquibase: DEBUG
 #    org.springframework.r2dbc: DEBUG
 #    io.r2dbc: DEBUG
 #    reactor.core.publisher: DEBUG
