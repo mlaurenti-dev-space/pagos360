@@ -14,8 +14,6 @@ class PayPagos360PaymentRequestClientAdapter(private val webClient: WebClient) :
 
     private val logger: Logger = LoggerFactory.getLogger(PayPagos360PaymentRequestClientAdapter::class.java)
 
-    var test: Boolean = true
-
     override fun createPaymentRequest(request: PayRequest): Mono<PayResponse> {
         logger.info("Creating payment request for id={}, payerName={}", request.id, request.payerName)
         val body = PayPagos360RequestBody(
@@ -33,7 +31,7 @@ class PayPagos360PaymentRequestClientAdapter(private val webClient: WebClient) :
             .retrieve()
             .bodyToMono(PayPagos360ChargeResponse::class.java)
             .doOnSubscribe { logger.debug("Subscribed to createPaymentRequest for id={}", request.id) }
-            .doOnError { e -> logger.error("Error creating payment request for id={}", request.id, e) }
+            .doOnError { e -> logger.error("Error creating payment request for id={}", request.id, e) } // Podriamos guardar el error en la base de datos json response.
             .map { resp ->
                 logger.info("Received response for payment request id={}, checkoutUrl={}", request.id, resp.checkoutUrl)
                 PayResponse(
