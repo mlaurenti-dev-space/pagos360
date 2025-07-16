@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Mono
 
 @RestControllerAdvice
@@ -33,4 +34,17 @@ class PayApiExceptionHandler {
             )
         )
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): Mono<Map<String, String>> =
+        Mono.just(mapOf("error" to (ex.message ?: "An unexpected error occurred")))
+
+    @ExceptionHandler(ResponseStatusException::class)
+    fun handleResponseStatusException(ex: ResponseStatusException): Mono<ResponseEntity<Map<String, String>>> =
+        Mono.just(
+            ResponseEntity.status(ex.statusCode).body(
+                mapOf("error" to (ex.reason ?: "An unexpected error occurred"))
+            )
+        )
 }
