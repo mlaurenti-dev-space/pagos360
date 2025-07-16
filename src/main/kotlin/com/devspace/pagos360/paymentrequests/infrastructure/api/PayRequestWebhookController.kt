@@ -5,6 +5,7 @@ import com.devspace.pagos360.paymentrequests.application.dto.PayResponseDto
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
@@ -23,10 +24,11 @@ class PayRequestWebhookController(
 ) {
 
     @PatchMapping("/{id}/status")
-    @Operation(summary = "Receive webhook event from payment provider")
+    @Operation(
+        summary = "Receive webhook event from payment provider",
+        security = [SecurityRequirement(name = "bearerAuth")]
+    )
     fun webhook(
-        @Parameter(description = "Token for authentication", required = true)
-        @RequestHeader("Bearer") token: String,
         @PathVariable id: UUID,
         @RequestBody cmd: PayPatchRequestStatusCmd
     ): Mono<PayResponseDto> =

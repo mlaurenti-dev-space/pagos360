@@ -33,7 +33,7 @@ class PaySecurityConfig(
             .csrf { it.disable() }
             .authorizeExchange {
                 it
-                    .pathMatchers(HttpMethod.POST, "/api/payment-requests/webhook").authenticated()
+                    .pathMatchers(HttpMethod.PATCH, "/api/webhook/payment-requests/*/status").authenticated()
                     .anyExchange().permitAll()
             }
             .oauth2ResourceServer { oauth2 ->
