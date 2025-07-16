@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16.4
+    container_name: pr-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pr-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pr-pass}
+      POSTGRES_DB: ${POSTGRES_DB:-pr}
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    container_name: pr-adminer
+    restart: unless-stopped
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  payment-requests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pr-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      JDBC_URL: ${JDBC_URL}
+      JDBC_USER: ${JDBC_USER}
+      JDBC_PASSWORD: ${JDBC_PASSWORD}
+      R2DBC_URL: ${R2DBC_URL}
+      R2DBC_USER: ${R2DBC_USER}
+      R2DBC_PASSWORD: ${R2DBC_PASSWORD}
+      PAGOS360_BASE_URL: ${PAGOS360_BASE_URL}
+      PAGOS360_API_KEY: ${PAGOS360_API_KEY}
+      SECRET_KEY: ${SECRET_KEY}
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+    ports:
+      - "8080:8080"
+
+  auth-server:
+    build:
+      context: ./lib
+      dockerfile: Dockerfile.auth
+    container_name: pr-auth-server
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      SERVER_PORT: 8083  # O como lo configures
+    ports:
+      - "8083:8083"
+
+volumes:
+  pgdata:

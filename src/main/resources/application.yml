@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: Payment Requests
+  profiles:
+    active: ${PROFILE:default}  # Default profile if not set
+  r2dbc:
+    url: ${R2DBC_URL}
+    username: ${R2DBC_USER}
+    password: ${R2DBC_PASSWORD}
+    pool:
+      max-size: 20  # Maximum number of connections in the pool
+      initial-size: 5 # Initial number of connections in the pool
+      validation-query: SELECT 1  -- Validates connections before use
+  datasource:
+    url: ${JDBC_URL}
+    username: ${JDBC_USER}
+    password: ${JDBC_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Aunque no usamos jwk-set-uri, vamos a inyectar nuestro decoder manualmente
+          # El 'secret' lo cargará nuestro bean de configuración.
+          secret: ${SECRET_KEY:}
+pagos360:
+  api:
+    base-url: ${PAGOS360_BASE_URL}
+    api-key: ${PAGOS360_API_KEY}
+#logging:
+#  level:
+#    liquibase: DEBUG
+#    org.springframework.boot.autoconfigure.liquibase: DEBUG
+#    org.springframework.r2dbc: DEBUG
+#    io.r2dbc: DEBUG
+#    reactor.core.publisher: DEBUG
+
+
+
