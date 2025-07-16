@@ -47,7 +47,7 @@ class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(
-        @RequestBody cmds: List<@Valid PayCreateRequestCmd>
+        @RequestBody cmds: List<PayCreateRequestCmd>
     ): Flux<PayResponseDto> =
         payRequestUseCases.create(cmds.map { cmd ->
             cmd.toDomain()
