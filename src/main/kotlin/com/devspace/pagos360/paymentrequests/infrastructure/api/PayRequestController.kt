@@ -9,6 +9,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
@@ -36,7 +37,11 @@ class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
     @Operation(summary = "Get Payment Request by ID")
     @GetMapping("/{id}")
     fun getOne(@PathVariable id: String): Mono<PayResponseDto> =
-        payRequestUseCases.findById(UUID.fromString(id)).map { it.toDto() }
+        payRequestUseCases.findById(UUID.fromString(id)).map { it.toDto() }.switchIfEmpty(
+            Mono.error(
+                ResponseStatusException(HttpStatus.NOT_FOUND, "Payment request not found")
+            )
+        )
 
     @Operation(summary = "Create Payment Requests")
     @PostMapping

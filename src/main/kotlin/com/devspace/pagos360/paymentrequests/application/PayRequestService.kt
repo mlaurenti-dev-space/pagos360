@@ -59,7 +59,7 @@ class PayRequestService(
                                 )
                             }
                     }
-                .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(1)))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(1))) // Podria usar properties para configurar
             }, 5)
     }
 
