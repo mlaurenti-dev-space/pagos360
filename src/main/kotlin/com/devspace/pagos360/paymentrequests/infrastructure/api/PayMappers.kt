@@ -1,16 +1,7 @@
 package com.devspace.pagos360.paymentrequests.infrastructure.api
 
-import com.devspace.pagos360.paymentrequests.application.dto.PayCreateRequestCmd
-import com.devspace.pagos360.paymentrequests.application.dto.PayPatchRequestStatusCmd
 import com.devspace.pagos360.paymentrequests.application.dto.PayResponseDto
-import com.devspace.pagos360.paymentrequests.domain.PayDueDate
-import com.devspace.pagos360.paymentrequests.domain.PayMoney
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
-import com.devspace.pagos360.paymentrequests.domain.PayStatus
-import java.math.BigDecimal
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 fun PayRequest.toDto() = PayResponseDto(
     id = this.id,
@@ -21,41 +12,3 @@ fun PayRequest.toDto() = PayResponseDto(
     status = this.status.name,
     checkoutUrl = this.checkoutUrl
 )
-
-fun PayCreateRequestCmd.toDomain(): PayRequest {
-    require(!description.isNullOrBlank()) { "Description must not be null or blank" }
-    require(!firstDueDate.isNullOrBlank()) { "First due date must not be null or blank" }
-    require(!firstTotal.isNullOrBlank()) { "First total must not be null or blank" }
-    require(!payerName.isNullOrBlank()) { "Payer name must not be null or blank" }
-
-    val total = try {
-        BigDecimal(firstTotal)
-    } catch (e: Exception) {
-        throw IllegalArgumentException("First total must be a valid number")
-    }
-    require(total > BigDecimal.ZERO) { "First total must be greater than zero" }
-
-    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-    val dueDate = try {
-        LocalDate.parse(firstDueDate, formatter)
-    } catch (e: Exception) {
-        throw IllegalArgumentException("First due date must be a valid date in format dd-MM-yyyy")
-    }
-
-    return PayRequest(
-        description = description,
-        firstDueDate = PayDueDate(dueDate),
-        firstTotal = PayMoney(total),
-        payerName = payerName,
-        id = UUID.randomUUID()
-    )
-}
-
-
-fun PayPatchRequestStatusCmd.toStatus(): PayStatus {
-    return when (status.name.lowercase()) {
-        "paid" -> PayStatus.PAID
-        "reversed" -> PayStatus.REVERSED
-        else -> throw IllegalArgumentException("Invalid status: $status")
-    }
-}
