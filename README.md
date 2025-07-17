@@ -18,31 +18,7 @@ Run the Maven wrapper to build the executable JAR:
 
 ## Running with Docker Compose
 
-A `docker-compose.yml` file is provided to run the service together with PostgreSQL, Adminer and an example authentication server. Simply execute:
-
-```bash
-docker-compose up --build
-```
-
-The compose file configures environment variables such as database credentials and the Pagos360 API key. Default values are stored in the `.env` file:
-
-```env
-POSTGRES_USER=pr-user
-POSTGRES_PASSWORD=pr-pass
-POSTGRES_DB=pr
-PG_PORT=5432
-ADMINER_PORT=8081
-R2DBC_URL=r2dbc:postgresql://postgres:5432/pr
-R2DBC_USER=pr-user
-R2DBC_PASSWORD=pr-pass
-JDBC_URL=jdbc:postgresql://postgres:5432/pr
-JDBC_USER=pr-user
-JDBC_PASSWORD=pr-pass
-PAGOS360_BASE_URL=https://api.sandbox.pagos360.com
-PAGOS360_API_KEY=...your_api_key...
-SECRET_KEY=...secret_for_jwt...
-PROFILE=dev
-```
+Please read the RUNNING.md file. Default values are stored in the `.env` file:
 
 ## API Endpoints
 
