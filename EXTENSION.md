@@ -1,4 +1,6 @@
-**Solución 1 propuesta:**
+Mi enfoque del código fue mas pensado para la solución dos.
+
+## **Solución 1 propuesta: **
 
 * El microservicio de pagos (`Pagos360 Service`) expone una API REST que recibe todas las solicitudes de pago.
 * Internamente, implementa una fábrica o registro de estrategias (`PaymentStrategyFactory`), donde cada estrategia representa un método de pago distinto: tarjeta, CBU, cripto, etc.
@@ -41,7 +43,7 @@ Respuesta al Cliente
 * Lógica compartida (auditoría, validación, logging) más fácil de reutilizar.
 
 
-**Solución 2 propuesta:**
+## **Solución 2 propuesta:**
 
 * Implementar un microservicio central denominado **Payment Orchestrator**, responsable de recibir las solicitudes de pago y delegar la operación al microservicio correspondiente según el tipo de pago.
 * Cada método de pago (CBU, Tarjeta, Cripto, etc.) cuenta con su propio microservicio y expone una API estándar para procesar pagos.
