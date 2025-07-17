@@ -28,7 +28,7 @@ Podés usar el siguiente payload para probar la creación masiva de solicitudes 
 [
   {
     "description": "Prueba 1",
-    "firstDueDate": "15-07-2025",
+    "firstDueDate": "16-07-2025",
     "firstTotal": "100",
     "payerName": "Mariano"
   },
