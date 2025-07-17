@@ -14,19 +14,14 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
-/**
- * Controller for managing payment requests.
- * Provides endpoints to create, list, and retrieve payment requests.
- *
- * @property payRequestUseCases Use cases for handling payment requests.
- */
+
 @RestController
-@RequestMapping("/api/payment-requests")
+@RequestMapping("/api/payments")
 @Validated
-@Tag(name = "Payment Requests", description = "Payment Requests")
+@Tag(name = "Payment", description = "Payment")
 class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
 
-    @Operation(summary = "List Payment Requests")
+    @Operation(summary = "List Payments")
     @GetMapping
     fun list(
         @RequestParam(defaultValue = "0") page: Int,
@@ -34,16 +29,16 @@ class PayRequestController(private val payRequestUseCases: PayRequestUseCases) {
     ): Flux<PayResponseDto> =
         payRequestUseCases.listAll(page, size).map { it.toDto() }
 
-    @Operation(summary = "Get Payment Request by ID")
+    @Operation(summary = "Get Payment by ID")
     @GetMapping("/{id}")
     fun getOne(@PathVariable id: String): Mono<PayResponseDto> =
         payRequestUseCases.findById(UUID.fromString(id)).map { it.toDto() }.switchIfEmpty(
             Mono.error(
-                ResponseStatusException(HttpStatus.NOT_FOUND, "Payment request not found")
+                ResponseStatusException(HttpStatus.NOT_FOUND, "Payment not found")
             )
         )
 
-    @Operation(summary = "Create Payment Requests")
+    @Operation(summary = "Create Payment")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun create(

@@ -3,14 +3,12 @@ package com.devspace.pagos360.paymentrequests.application
 import com.devspace.pagos360.paymentrequests.domain.PayRequest
 import com.devspace.pagos360.paymentrequests.domain.PayStatus
 import com.devspace.pagos360.paymentrequests.domain.port.inbound.PayRequestUseCases
-import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayPaymentRequestProviderClient
+import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayPaymentProviderClient
 import com.devspace.pagos360.paymentrequests.domain.port.outbound.PayRequestRepository
+import com.devspace.pagos360.paymentrequests.infrastructure.provider.PaymentProviderFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import org.springframework.transaction.ReactiveTransactionManager
-import org.springframework.transaction.TransactionStatus
-import org.springframework.transaction.reactive.TransactionalOperator
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
@@ -21,7 +19,7 @@ import java.util.UUID
 @Service
 class PayRequestService(
     private val payRequestRepository: PayRequestRepository,
-    private val payPaymentRequestProviderClient: PayPaymentRequestProviderClient
+    private val paymentProviderFactory: PaymentProviderFactory
 ) : PayRequestUseCases {
 
     private val logger: Logger = LoggerFactory.getLogger(PayRequestService::class.java)
@@ -41,7 +39,8 @@ class PayRequestService(
                 payRequestRepository.save(pr)
                     .flatMap { saved ->
                         logger.info("Saved PayRequest with id: {}", saved.id)
-                        payPaymentRequestProviderClient.createPaymentRequest(saved)
+                        val provider = paymentProviderFactory.getProvider(pr.paymentMethod)
+                        provider.createPayment(saved)
                             .map { resp ->
                                 logger.info("Provider response for PayRequest id {}: {}", saved.id, resp)
                                 saved.copy(

@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono
  * Interface defining the client for interacting with the payment provider.
  * Provides methods to create a charge for a payment request.
  */
-interface PayPaymentRequestProviderClient {
-    fun createPaymentRequest(request: PayRequest): Mono<PayResponse>
+interface PayPaymentProviderClient {
+    fun createPayment(request: PayRequest): Mono<PayResponse>
 }

@@ -27,7 +27,8 @@ data class PayRequest(
     val status: PayStatus = PayStatus.PENDING,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now(),
-    val checkoutUrl: String = StringUtils.EMPTY
+    val checkoutUrl: String = StringUtils.EMPTY,
+    @Transient val paymentMethod: PaymentMethodType = PaymentMethodType.REQUEST // Default payment method type
 ) {
     init {
         require(description.isNotBlank()) { "Description cannot be blank" }
